@@ -1,0 +1,17 @@
+name: Supabase 保活
+
+on:
+  schedule:
+    - cron: '0 1,13 * * *'   # 每天北京时间 9:00 和 21:00
+  workflow_dispatch:          # 支持手动触发测试
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/assets?select=id&limit=1"
